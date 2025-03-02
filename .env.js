@@ -1,0 +1,11 @@
+// Configuración de variables de entorno para Expo
+// Este archivo debe ser importado en app.config.js
+
+module.exports = {
+  EXPO_PUBLIC_SUPABASE_URL: "https://tu-proyecto.supabase.co",
+  EXPO_PUBLIC_SUPABASE_ANON_KEY: "tu-clave-anonima-de-supabase",
+  EXPO_PUBLIC_GOOGLE_CLIENT_ID: "tu-id-de-cliente-de-google",
+  EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME: "tu-nombre-de-nube-de-cloudinary",
+  EXPO_PUBLIC_CLOUDINARY_API_KEY: "tu-clave-api-de-cloudinary",
+  EXPO_PUBLIC_CLOUDINARY_API_SECRET: "tu-secreto-api-de-cloudinary",
+};

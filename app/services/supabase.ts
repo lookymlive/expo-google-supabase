@@ -3,6 +3,7 @@
  */
 
 import { createClient } from "@supabase/supabase-js";
+import Constants from "expo-constants";
 import * as SecureStore from "expo-secure-store";
 import "react-native-url-polyfill/auto";
 
@@ -19,9 +20,18 @@ const ExpoSecureStoreAdapter = {
   },
 };
 
-// Obtener las variables de entorno
-const supabaseUrl = process.env.EXPO_PUBLIC_SUPABASE_URL || "";
-const supabaseAnonKey = process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY || "";
+// Obtener las variables de entorno desde Constants
+const supabaseUrl = Constants.expoConfig?.extra?.supabaseUrl || "";
+const supabaseAnonKey = Constants.expoConfig?.extra?.supabaseAnonKey || "";
+
+// Verificar si las variables están definidas
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error(
+    "Error: Las variables de entorno de Supabase no están definidas correctamente."
+  );
+  console.error("supabaseUrl:", supabaseUrl);
+  console.error("supabaseAnonKey:", supabaseAnonKey);
+}
 
 // Crear el cliente de Supabase
 export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
