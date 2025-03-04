@@ -1,6 +1,8 @@
+import { Ionicons } from '@expo/vector-icons';
 import { ResizeMode, Video } from 'expo-av';
 import React, { useRef, useState } from 'react';
-import { ActivityIndicator, Dimensions, FlatList, StyleSheet, Text, View, ViewToken } from 'react-native';
+import { Dimensions, FlatList, StyleSheet, Text, TouchableOpacity, View, ViewToken } from 'react-native';
+import { Loading } from '../../components/ui';
 import { useVideos } from '../../hooks';
 import { Video as VideoType } from '../../types';
 import { formatNumber } from '../../utils';
@@ -15,10 +17,15 @@ const FeedScreen: React.FC = () => {
   // Renderizar cada video
   const renderVideoItem = ({ item, index }: { item: VideoType; index: number }) => {
     const isActive = index === activeVideoIndex;
+    const videoRef = useRef<Video>(null);
+
+    // Obtener la primera letra para el avatar (o usar 'U' como fallback)
+    const userInitial = item.userId ? item.userId.charAt(0).toUpperCase() : 'U';
 
     return (
       <View style={styles.videoContainer}>
         <Video
+          ref={videoRef}
           source={{ uri: item.url }}
           rate={1.0}
           volume={1.0}
@@ -29,17 +36,34 @@ const FeedScreen: React.FC = () => {
           style={styles.video}
         />
 
-        <View style={styles.videoInfo}>
-          <Text style={styles.videoTitle}>{item.title}</Text>
-          <Text style={styles.videoDescription}>{item.description}</Text>
+        <View style={styles.overlay}>
+          <View style={styles.videoInfo}>
+            <Text style={styles.videoTitle}>{item.title}</Text>
+            <Text style={styles.videoDescription}>{item.description || 'Sin descripción'}</Text>
 
-          <View style={styles.statsContainer}>
-            <Text style={styles.statText}>
-              {formatNumber(item.likes)} likes
-            </Text>
-            <Text style={styles.statText}>
-              {formatNumber(item.comments)} comentarios
-            </Text>
+            <View style={styles.userInfo}>
+              <View style={styles.userAvatar}>
+                <Text style={styles.userInitial}>{userInitial}</Text>
+              </View>
+              <Text style={styles.userName}>Usuario</Text>
+            </View>
+          </View>
+
+          <View style={styles.actionsContainer}>
+            <TouchableOpacity style={styles.actionButton}>
+              <Ionicons name="heart-outline" size={30} color="white" />
+              <Text style={styles.actionText}>{formatNumber(item.likes)}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.actionButton}>
+              <Ionicons name="chatbubble-outline" size={30} color="white" />
+              <Text style={styles.actionText}>{formatNumber(item.comments)}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.actionButton}>
+              <Ionicons name="share-social-outline" size={30} color="white" />
+              <Text style={styles.actionText}>Compartir</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -59,19 +83,16 @@ const FeedScreen: React.FC = () => {
   }).current;
 
   if (loading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#4285F4" />
-        <Text style={styles.loadingText}>Cargando videos...</Text>
-      </View>
-    );
+    return <Loading fullScreen text="Cargando videos..." color="#fff" />;
   }
 
   return (
     <View style={styles.container}>
       {videos.length === 0 ? (
         <View style={styles.emptyContainer}>
+          <Ionicons name="videocam-off-outline" size={50} color="#fff" />
           <Text style={styles.emptyText}>No hay videos disponibles</Text>
+          <Text style={styles.emptySubtext}>Los videos aparecerán aquí cuando los comercios los suban</Text>
         </View>
       ) : (
         <FlatList
@@ -110,61 +131,89 @@ const styles = StyleSheet.create({
     bottom: 0,
     right: 0,
   },
+  overlay: {
+    ...StyleSheet.absoluteFillObject,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 20,
+    paddingBottom: 50,
+  },
   videoInfo: {
-    position: 'absolute',
-    bottom: 80,
-    left: 20,
-    right: 20,
+    flex: 3,
+    justifyContent: 'flex-end',
   },
   videoTitle: {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 5,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 10,
+    textShadow: '1px 1px 10px rgba(0, 0, 0, 0.75)',
   },
   videoDescription: {
     color: 'white',
     fontSize: 14,
-    marginBottom: 10,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 10,
+    marginBottom: 15,
+    textShadow: '1px 1px 10px rgba(0, 0, 0, 0.75)',
   },
-  statsContainer: {
+  userInfo: {
     flexDirection: 'row',
+    alignItems: 'center',
     marginTop: 10,
   },
-  statText: {
-    color: 'white',
-    marginRight: 15,
-    fontSize: 14,
-    textShadowColor: 'rgba(0, 0, 0, 0.75)',
-    textShadowOffset: { width: -1, height: 1 },
-    textShadowRadius: 10,
-  },
-  loadingContainer: {
-    flex: 1,
+  userAvatar: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#4285F4',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'black',
+    marginRight: 10,
   },
-  loadingText: {
+  userInitial: {
     color: 'white',
-    marginTop: 10,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  userName: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '500',
+    textShadow: '1px 1px 10px rgba(0, 0, 0, 0.75)',
+  },
+  actionsContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  actionButton: {
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  actionText: {
+    color: 'white',
+    marginTop: 5,
+    fontSize: 12,
+    textShadow: '1px 1px 10px rgba(0, 0, 0, 0.75)',
   },
   emptyContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: 'black',
+    padding: 20,
   },
   emptyText: {
     color: 'white',
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  emptySubtext: {
+    color: '#ccc',
+    fontSize: 14,
+    textAlign: 'center',
   },
 });
 
-export default FeedScreen; 
+export default FeedScreen;

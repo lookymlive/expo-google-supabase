@@ -8,8 +8,9 @@ export default {
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
+    newArchEnabled: true,
     splash: {
-      image: "./assets/splash.png",
+      image: "./assets/splash-icon.png",
       resizeMode: "contain",
       backgroundColor: "#ffffff",
     },
@@ -27,12 +28,7 @@ export default {
       favicon: "./assets/favicon.png",
     },
     extra: {
-      supabaseUrl: ENV.EXPO_PUBLIC_SUPABASE_URL,
-      supabaseAnonKey: ENV.EXPO_PUBLIC_SUPABASE_ANON_KEY,
-      googleClientId: ENV.EXPO_PUBLIC_GOOGLE_CLIENT_ID,
-      cloudinaryCloudName: ENV.EXPO_PUBLIC_CLOUDINARY_CLOUD_NAME,
-      cloudinaryApiKey: ENV.EXPO_PUBLIC_CLOUDINARY_API_KEY,
-      cloudinaryApiSecret: ENV.EXPO_PUBLIC_CLOUDINARY_API_SECRET,
+      ...ENV,
     },
   },
 };

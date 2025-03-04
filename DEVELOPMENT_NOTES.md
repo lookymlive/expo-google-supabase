@@ -7,43 +7,51 @@ Este documento registra los pasos seguidos durante el desarrollo de la aplicaci�
 ### Configuración Inicial del Proyecto
 
 1. Creación del proyecto Expo con TypeScript:
-   ```
+
+   ```shell
    npx create-expo-app -t expo-template-blank-typescript (. si ya teniamos una carpeta con nombre de la app)
    ```
 
 2. Instalación de dependencias de navegación:
-   ```
+
+   ```shell
    npm install @react-navigation/native @react-navigation/stack @react-navigation/bottom-tabs
    ```
 
 3. Instalación de dependencias para autenticación y almacenamiento:
-   ```
+
+   ```shell
    npm install @supabase/supabase-js expo-auth-session expo-web-browser expo-secure-store
    ```
 
 4. Instalación de dependencias para manejo de multimedia:
-   ```
+
+   ```shell
    npm install expo-image-picker expo-av expo-file-system
    ```
 
 5. Instalación de dependencias para Cloudinary:
-   ```
+
+   ```shell
    npm install cloudinary-react-native
    ```
 
 6. Instalación de dependencias adicionales de Expo:
-   ```
+
+   ```shell
    npx expo install react-native-screens react-native-safe-area-context react-native-gesture-handler expo-constants expo-status-bar
    ```
 
 ### Creación de la Estructura de Carpetas
 
 1. Creación de la carpeta principal:
+
    ```
    mkdir app
    ```
 
 2. Creación de subcarpetas principales:
+
    ```
    mkdir app\components
    mkdir app\hooks
@@ -55,6 +63,7 @@ Este documento registra los pasos seguidos durante el desarrollo de la aplicaci�
    ```
 
 3. Creación de subcarpetas de componentes:
+
    ```
    mkdir app\components\auth
    mkdir app\components\feed
@@ -63,6 +72,7 @@ Este documento registra los pasos seguidos durante el desarrollo de la aplicaci�
    ```
 
 4. Creación de subcarpetas de pantallas:
+
    ```
    mkdir app\screens\auth
    mkdir app\screens\feed
@@ -71,17 +81,20 @@ Este documento registra los pasos seguidos durante el desarrollo de la aplicaci�
    ```
 
 5. Creación de archivos de servicios básicos:
+
    ```
    echo // Configuración de Supabase > app\services\supabase.ts
    echo // Configuración de Cloudinary > app\services\cloudinary.ts
    ```
 
 6. Creación de archivo de tipos básicos:
+
    ```
    echo // Definiciones de tipos básicos > app\types\index.ts
    ```
 
 7. Creación de archivos de configuración de entorno:
+
    ```
    echo SUPABASE_URL=your_supabase_url > .env.example
    echo SUPABASE_ANON_KEY=your_supabase_anon_key >> .env.example
@@ -179,7 +192,7 @@ Estas correcciones mejoran la seguridad de tipos y hacen que el código sea más
 - La aplicación tendrá dos tipos de usuarios: Comercios (pueden subir videos) y Usuarios regulares (solo pueden ver)
 - Se utilizará Supabase para gestionar la autenticación y los roles de usuario
 - Los videos se almacenarán en Cloudinary
-- La aplicación se desarrollará inicialmente para Android y Web usando Expo 
+- La aplicación se desarrollará inicialmente para Android y Web usando Expo
 
 ## Fecha: 03/03/2025
 
@@ -215,7 +228,7 @@ Estas mejoras proporcionan una estructura básica funcional para la aplicación,
 1. Implementar la pantalla de subida de videos (solo para comercios)
 2. Mejorar la UI/UX de la aplicación
 3. Implementar la funcionalidad de búsqueda de videos
-4. Añadir interacciones sociales (likes, comentarios) 
+4. Añadir interacciones sociales (likes, comentarios)
 
 ## Fecha: 04/03/2025
 
@@ -245,7 +258,7 @@ Estas mejoras permiten una mejor gestión de las variables de entorno en la apli
 2. Implementar la pantalla de subida de videos (solo para comercios)
 3. Mejorar la UI/UX de la aplicación
 4. Implementar la funcionalidad de búsqueda de videos
-5. Añadir interacciones sociales (likes, comentarios) 
+5. Añadir interacciones sociales (likes, comentarios)
 
 ## Fecha: 05/03/2025
 
@@ -267,6 +280,7 @@ Se han configurado los servicios externos necesarios para el funcionamiento de l
 
 3. **Configurar tablas en la base de datos**:
    - Tabla `profiles`:
+
      ```sql
      CREATE TABLE profiles (
        id UUID PRIMARY KEY REFERENCES auth.users(id),
@@ -276,7 +290,9 @@ Se han configurado los servicios externos necesarios para el funcionamiento de l
        created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
      );
      ```
+
    - Tabla `videos`:
+
      ```sql
      CREATE TABLE videos (
        id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -292,6 +308,7 @@ Se han configurado los servicios externos necesarios para el funcionamiento de l
 
 4. **Configurar políticas de seguridad RLS (Row Level Security)**:
    - Para `profiles`:
+
      ```sql
      -- Permitir lectura pública
      CREATE POLICY "Perfiles visibles para todos" ON profiles
@@ -301,7 +318,9 @@ Se han configurado los servicios externos necesarios para el funcionamiento de l
      CREATE POLICY "Los usuarios pueden actualizar sus perfiles" ON profiles
        FOR UPDATE USING (auth.uid() = id);
      ```
+
    - Para `videos`:
+
      ```sql
      -- Permitir lectura pública
      CREATE POLICY "Videos visibles para todos" ON videos
@@ -365,6 +384,7 @@ Se han configurado los servicios externos necesarios para el funcionamiento de l
 #### 4. Actualización de archivos de configuración
 
 1. **Actualizar `.env` y `.env.js` con las credenciales reales**:
+
    ```
    EXPO_PUBLIC_SUPABASE_URL=https://xxxxxxxxxxxx.supabase.co
    EXPO_PUBLIC_SUPABASE_ANON_KEY=eyJxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
@@ -400,4 +420,4 @@ Estos scripts mejoran la experiencia de desarrollo al simplificar el proceso de 
 1. Implementar la pantalla de subida de videos (solo para comercios)
 2. Mejorar la UI/UX de la aplicación
 3. Implementar la funcionalidad de búsqueda de videos
-4. Añadir interacciones sociales (likes, comentarios) 
+4. Añadir interacciones sociales (likes, comentarios)

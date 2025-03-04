@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useAuth } from '../../hooks';
 import { supabase } from '../../services/supabase';
-import { NavigationProps } from '../../types';
+import { NavigationProps, Video } from '../../types';
 import { formatDate } from '../../utils';
 
 const ProfileScreen: React.FC<NavigationProps> = () => {
   const { user } = useAuth();
   const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [videos, setVideos] = useState([]);
+  const [videos, setVideos] = useState<Video[]>([]);
   const [videosLoading, setVideosLoading] = useState(true);
 
   useEffect(() => {
